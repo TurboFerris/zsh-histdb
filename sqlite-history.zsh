@@ -305,7 +305,7 @@ histdb () {
         local dir=""
         for dir ($indirs); do
             dir="${${${dir#--in}#=}:-$PWD}"
-            dirwhere="${dirwhere}${dirwhere:+ or }places.dir like '$(sql_escape $dir)%'"
+            dirwhere="${dirwhere}${dirwhere:+ or }places.dir = '$(sql_escape $dir)' or places.dir like '$(sql_escape $dir/)%'"
         done
         for dir ($atdirs); do
             dir="${${${dir#--at}#=}:-$PWD}"
