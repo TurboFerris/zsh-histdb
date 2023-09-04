@@ -493,3 +493,5 @@ where ${where})"
         fi
     fi
 }
+
+_histdb_init
