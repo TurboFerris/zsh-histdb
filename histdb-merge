@@ -40,8 +40,8 @@ ATTACH DATABASE '${ours}' AS n;
 ATTACH DATABASE '${ancestor}' AS a;
 
 -- copy missing commands and places
-INSERT INTO commands (argv) SELECT argv FROM n.commands as NC where NC.id > (SELECT max(id) FROM a.commands);
-INSERT INTO places (host, dir) SELECT host, dir FROM n.places as NP where NP.id > (SELECT max(id) FROM a.places);
+INSERT INTO commands (argv) SELECT argv FROM n.commands as NC where NC.id > (SELECT coalesce(max(id), -1) FROM a.commands);
+INSERT INTO places (host, dir) SELECT host, dir FROM n.places as NP where NP.id > (SELECT coalesce(max(id), -1) FROM a.places);
 
 -- insert missing history, rewriting IDs
 -- could uniquify sessions by host in this way too
@@ -54,7 +54,7 @@ LEFT JOIN n.commands CO ON NO.command_id = CO.id
 LEFT JOIN commands C ON C.argv = CO.argv
 LEFT JOIN places P ON (P.host = PO.host
 AND P.dir = PO.dir)
-WHERE NO.id > (SELECT MAX(id) FROM a.history)
+WHERE NO.id > (SELECT coalesce(MAX(id), -1) FROM a.history)
 ;
 VACUUM;
 EOF
